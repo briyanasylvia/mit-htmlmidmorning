@@ -1,0 +1,49 @@
+p{
+  color: blue;
+  font-family: "DejaVu Sans Mono";
+  font-size: 15px;
+  align-content: center;
+}
+button{
+  text-align: center;
+  color: blueviolet;
+  font-size: 15px;
+  padding: 15px;
+  float: right;
+
+}
+/*body{background-image:url("housed.jpeg");
+background-repeat: no-repeat;
+font-size: 15px;
+background-color: black;
+background-size: contain;
+}*/
+
+table{width: 100%;
+  border-collapse: collapse;
+  padding: 5px;
+  border: dotted;
+}
+/*</table>
+
+
+}
+th,td{border: 3px dotted blue;
+font-family: "DejaVu Sans Mono";
+text-align: center;
+color: blue;
+padding: 5px}
+tr:nth-child(even);{
+background: blue;
+background-image: url("range.jpeg");
+
+}*/
+navigation{
+  a{color: blue;
+  }
+  li{color: darkred;
+  background-color: blue}
+}/*
+
+
+

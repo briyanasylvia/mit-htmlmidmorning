@@ -1,0 +1,1242 @@
+<html>
+<head>
+<title>.htaccess</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+.htaccess</font>
+</center></td></tr></table>
+<pre><span class="s0"># Apache Server Configs v4.0.0 | MIT License</span>
+<span class="s0"># https://github.com/h5bp/server-configs-apache</span>
+
+<span class="s0"># (!) Using `.htaccess` files slows down Apache, therefore, if you have</span>
+<span class="s0"># access to the main server configuration file (which is usually called</span>
+<span class="s0"># `httpd.conf`), you should add this logic there.</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/howto/htaccess.html</span>
+
+<span class="s0"># ######################################################################</span>
+<span class="s0"># # CROSS-ORIGIN                                                       #</span>
+<span class="s0"># ######################################################################</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Cross-origin requests                                              |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Allow cross-origin requests.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS</span>
+<span class="s0"># https://enable-cors.org/</span>
+<span class="s0"># https://www.w3.org/TR/cors/</span>
+
+<span class="s0"># (!) Do not use this without understanding the consequences.</span>
+<span class="s0">#     This will permit access from any other website.</span>
+<span class="s0">#     Instead of using this file, consider using a specific rule such as</span>
+<span class="s0">#     allowing access based on (sub)domain:</span>
+<span class="s0">#</span>
+<span class="s0">#         Header set Access-Control-Allow-Origin &quot;subdomain.example.com&quot;</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     Header set Access-Control-Allow-Origin &quot;*&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Cross-origin images                                                |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Send the CORS header for images when browsers request it.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image</span>
+<span class="s0"># https://blog.chromium.org/2011/07/using-cross-domain-images-in-webgl-and.html</span>
+
+<span class="s0">&lt;IfModule mod_setenvif.c&gt;</span>
+    <span class="s0">&lt;IfModule mod_headers.c&gt;</span>
+        <span class="s0">&lt;FilesMatch &quot;\.(bmp|cur|gif|ico|jpe?g|a?png|svgz?|webp)$&quot;&gt;</span>
+            <span class="s0">SetEnvIf Origin &quot;:&quot; IS_CORS</span>
+            <span class="s0">Header set Access-Control-Allow-Origin &quot;*&quot; env=IS_CORS</span>
+        <span class="s0">&lt;/FilesMatch&gt;</span>
+    <span class="s0">&lt;/IfModule&gt;</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Cross-origin web fonts                                             |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Allow cross-origin access to web fonts.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developers.google.com/fonts/docs/troubleshooting</span>
+
+<span class="s0">&lt;IfModule mod_headers.c&gt;</span>
+    <span class="s0">&lt;FilesMatch &quot;\.(eot|otf|tt[cf]|woff2?)$&quot;&gt;</span>
+        <span class="s0">Header set Access-Control-Allow-Origin &quot;*&quot;</span>
+    <span class="s0">&lt;/FilesMatch&gt;</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Cross-origin resource timing                                       |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Allow cross-origin access to the timing information for all resources.</span>
+<span class="s0">#</span>
+<span class="s0"># If a resource isn't served with a `Timing-Allow-Origin` header that would</span>
+<span class="s0"># allow its timing information to be shared with the document, some of the</span>
+<span class="s0"># attributes of the `PerformanceResourceTiming` object will be set to zero.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Timing-Allow-Origin</span>
+<span class="s0"># https://www.w3.org/TR/resource-timing/</span>
+<span class="s0"># https://www.stevesouders.com/blog/2014/08/21/resource-timing-practical-tips/</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     Header set Timing-Allow-Origin: &quot;*&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ######################################################################</span>
+<span class="s0"># # ERRORS                                                             #</span>
+<span class="s0"># ######################################################################</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Custom error messages/pages                                        |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Customize what Apache returns to the client in case of an error.</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/core.html#errordocument</span>
+
+<span class="s0">ErrorDocument 404 /404.html</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Error prevention                                                   |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Disable the pattern matching based on filenames.</span>
+<span class="s0">#</span>
+<span class="s0"># This setting prevents Apache from returning a 404 error as the result of a</span>
+<span class="s0"># rewrite when the directory with the same name does not exist.</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/content-negotiation.html#multiviews</span>
+
+<span class="s0">Options -MultiViews</span>
+
+<span class="s0"># ######################################################################</span>
+<span class="s0"># # INTERNET EXPLORER                                                  #</span>
+<span class="s0"># ######################################################################</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Document modes                                                     |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Force Internet Explorer 8/9/10 to render pages in the highest mode</span>
+<span class="s0"># available in various cases when it may not.</span>
+<span class="s0">#</span>
+<span class="s0"># https://hsivonen.fi/doctype/#ie8</span>
+<span class="s0">#</span>
+<span class="s0"># (!) Starting with Internet Explorer 11, document modes are deprecated.</span>
+<span class="s0">#     If your business still relies on older web apps and services that were</span>
+<span class="s0">#     designed for older versions of Internet Explorer, you might want to</span>
+<span class="s0">#     consider enabling `Enterprise Mode` throughout your company.</span>
+<span class="s0">#</span>
+<span class="s0"># https://msdn.microsoft.com/en-us/library/ie/bg182625.aspx#docmode</span>
+<span class="s0"># https://blogs.msdn.microsoft.com/ie/2014/04/02/stay-up-to-date-with-enterprise-mode-for-internet-explorer-11/</span>
+<span class="s0"># https://msdn.microsoft.com/en-us/library/ff955275.aspx</span>
+
+<span class="s0">&lt;IfModule mod_headers.c&gt;</span>
+    <span class="s0">Header always set X-UA-Compatible &quot;IE=edge&quot; &quot;expr=%{CONTENT_TYPE} =~ m#text/html#i&quot;</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ######################################################################</span>
+<span class="s0"># # MEDIA TYPES AND CHARACTER ENCODINGS                                #</span>
+<span class="s0"># ######################################################################</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Media types                                                        |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Serve resources with the proper media types (f.k.a. MIME types).</span>
+<span class="s0">#</span>
+<span class="s0"># https://www.iana.org/assignments/media-types/media-types.xhtml</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/mod_mime.html#addtype</span>
+
+<span class="s0">&lt;IfModule mod_mime.c&gt;</span>
+
+  <span class="s0"># Data interchange</span>
+
+    <span class="s0">AddType application/atom+xml                        atom</span>
+    <span class="s0">AddType application/json                            json map topojson</span>
+    <span class="s0">AddType application/ld+json                         jsonld</span>
+    <span class="s0">AddType application/rss+xml                         rss</span>
+    <span class="s0">AddType application/geo+json                        geojson</span>
+    <span class="s0">AddType application/rdf+xml                         rdf</span>
+    <span class="s0">AddType application/xml                             xml</span>
+
+
+  <span class="s0"># JavaScript</span>
+
+    <span class="s0"># Servers should use text/javascript for JavaScript resources.</span>
+    <span class="s0"># https://html.spec.whatwg.org/multipage/scripting.html#scriptingLanguages</span>
+
+    <span class="s0">AddType text/javascript                             js mjs</span>
+
+
+  <span class="s0"># Manifest files</span>
+
+    <span class="s0">AddType application/manifest+json                   webmanifest</span>
+    <span class="s0">AddType application/x-web-app-manifest+json         webapp</span>
+    <span class="s0">AddType text/cache-manifest                         appcache</span>
+
+
+  <span class="s0"># Media files</span>
+
+    <span class="s0">AddType audio/mp4                                   f4a f4b m4a</span>
+    <span class="s0">AddType audio/ogg                                   oga ogg opus</span>
+    <span class="s0">AddType image/bmp                                   bmp</span>
+    <span class="s0">AddType image/svg+xml                               svg svgz</span>
+    <span class="s0">AddType image/webp                                  webp</span>
+    <span class="s0">AddType video/mp4                                   f4v f4p m4v mp4</span>
+    <span class="s0">AddType video/ogg                                   ogv</span>
+    <span class="s0">AddType video/webm                                  webm</span>
+    <span class="s0">AddType video/x-flv                                 flv</span>
+
+    <span class="s0"># Serving `.ico` image files with a different media type prevents</span>
+    <span class="s0"># Internet Explorer from displaying them as images:</span>
+    <span class="s0"># https://github.com/h5bp/html5-boilerplate/commit/37b5fec090d00f38de64b591bcddcb205aadf8ee</span>
+
+    <span class="s0">AddType image/x-icon                                cur ico</span>
+
+
+  <span class="s0"># WebAssembly</span>
+
+    <span class="s0">AddType application/wasm                            wasm</span>
+
+
+  <span class="s0"># Web fonts</span>
+
+    <span class="s0">AddType font/woff                                   woff</span>
+    <span class="s0">AddType font/woff2                                  woff2</span>
+    <span class="s0">AddType application/vnd.ms-fontobject               eot</span>
+    <span class="s0">AddType font/ttf                                    ttf</span>
+    <span class="s0">AddType font/collection                             ttc</span>
+    <span class="s0">AddType font/otf                                    otf</span>
+
+
+  <span class="s0"># Other</span>
+
+    <span class="s0">AddType application/octet-stream                    safariextz</span>
+    <span class="s0">AddType application/x-bb-appworld                   bbaw</span>
+    <span class="s0">AddType application/x-chrome-extension              crx</span>
+    <span class="s0">AddType application/x-opera-extension               oex</span>
+    <span class="s0">AddType application/x-xpinstall                     xpi</span>
+    <span class="s0">AddType text/calendar                               ics</span>
+    <span class="s0">AddType text/markdown                               markdown md</span>
+    <span class="s0">AddType text/vcard                                  vcard vcf</span>
+    <span class="s0">AddType text/vnd.rim.location.xloc                  xloc</span>
+    <span class="s0">AddType text/vtt                                    vtt</span>
+    <span class="s0">AddType text/x-component                            htc</span>
+
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Character encodings                                                |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Serve all resources labeled as `text/html` or `text/plain` with the media type</span>
+<span class="s0"># `charset` parameter set to `UTF-8`.</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/core.html#adddefaultcharset</span>
+
+<span class="s0">AddDefaultCharset utf-8</span>
+
+<span class="s0"># - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="s0"># Serve the following file types with the media type `charset` parameter set to</span>
+<span class="s0"># `UTF-8`.</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/mod_mime.html#addcharset</span>
+
+<span class="s0">&lt;IfModule mod_mime.c&gt;</span>
+    <span class="s0">AddCharset utf-8 .appcache \</span>
+                     <span class="s0">.bbaw \</span>
+                     <span class="s0">.css \</span>
+                     <span class="s0">.htc \</span>
+                     <span class="s0">.ics \</span>
+                     <span class="s0">.js \</span>
+                     <span class="s0">.json \</span>
+                     <span class="s0">.manifest \</span>
+                     <span class="s0">.map \</span>
+                     <span class="s0">.markdown \</span>
+                     <span class="s0">.md \</span>
+                     <span class="s0">.mjs \</span>
+                     <span class="s0">.topojson \</span>
+                     <span class="s0">.vtt \</span>
+                     <span class="s0">.vcard \</span>
+                     <span class="s0">.vcf \</span>
+                     <span class="s0">.webmanifest \</span>
+                     <span class="s0">.xloc</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ######################################################################</span>
+<span class="s0"># # REWRITES                                                           #</span>
+<span class="s0"># ######################################################################</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Rewrite engine                                                     |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># (1) Turn on the rewrite engine (this is necessary in order for the</span>
+<span class="s0">#     `RewriteRule` directives to work).</span>
+<span class="s0">#</span>
+<span class="s0">#     https://httpd.apache.org/docs/current/mod/mod_rewrite.html#RewriteEngine</span>
+<span class="s0">#</span>
+<span class="s0"># (2) Enable the `FollowSymLinks` option if it isn't already.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://httpd.apache.org/docs/current/mod/core.html#options</span>
+<span class="s0">#</span>
+<span class="s0"># (3) If your web host doesn't allow the `FollowSymlinks` option, you need to</span>
+<span class="s0">#     comment it out or remove it, and then uncomment the</span>
+<span class="s0">#     `Options +SymLinksIfOwnerMatch` line (4), but be aware of the performance</span>
+<span class="s0">#     impact.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://httpd.apache.org/docs/current/misc/perf-tuning.html#symlinks</span>
+<span class="s0">#</span>
+<span class="s0"># (4) Some cloud hosting services will require you set `RewriteBase`.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://www.rackspace.com/knowledge_center/frequently-asked-question/why-is-modrewrite-not-working-on-my-site</span>
+<span class="s0">#     https://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewritebase</span>
+<span class="s0">#</span>
+<span class="s0"># (5) Depending on how your server is set up, you may also need to use the</span>
+<span class="s0">#     `RewriteOptions` directive to enable some options for the rewrite engine.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewriteoptions</span>
+
+<span class="s0">&lt;IfModule mod_rewrite.c&gt;</span>
+
+    <span class="s0"># (1)</span>
+    <span class="s0">RewriteEngine On</span>
+
+    <span class="s0"># (2)</span>
+    <span class="s0">Options +FollowSymlinks</span>
+
+    <span class="s0"># (3)</span>
+    <span class="s0"># Options +SymLinksIfOwnerMatch</span>
+
+    <span class="s0"># (4)</span>
+    <span class="s0"># RewriteBase /</span>
+
+    <span class="s0"># (5)</span>
+    <span class="s0"># RewriteOptions &lt;options&gt;</span>
+
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Forcing `https://`                                                 |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Redirect from the `http://` to the `https://` version of the URL.</span>
+<span class="s0">#</span>
+<span class="s0"># https://wiki.apache.org/httpd/RewriteHTTPToHTTPS</span>
+
+<span class="s0"># (1) If you're using cPanel AutoSSL or the Let's Encrypt webroot method it</span>
+<span class="s0">#     will fail to validate the certificate if validation requests are</span>
+<span class="s0">#     redirected to HTTPS. Turn on the condition(s) you need.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml</span>
+<span class="s0">#     https://tools.ietf.org/html/draft-ietf-acme-acme-12</span>
+
+<span class="s0"># &lt;IfModule mod_rewrite.c&gt;</span>
+<span class="s0">#    RewriteEngine On</span>
+<span class="s0">#    RewriteCond %{HTTPS} !=on</span>
+<span class="s0">#    # (1)</span>
+<span class="s0">#    # RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/</span>
+<span class="s0">#    # RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[\w-]+$</span>
+<span class="s0">#    # RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$</span>
+<span class="s0">#    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Suppressing the `www.` at the beginning of URLs                    |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Rewrite www.example.com → example.com</span>
+
+<span class="s0"># The same content should never be available under two different URLs,</span>
+<span class="s0"># especially not with and without `www.` at the beginning.</span>
+<span class="s0"># This can cause SEO problems (duplicate content), and therefore, you should</span>
+<span class="s0"># choose one of the alternatives and redirect the other one.</span>
+<span class="s0">#</span>
+<span class="s0"># (!) NEVER USE BOTH WWW-RELATED RULES AT THE SAME TIME!</span>
+
+<span class="s0"># (1) Set %{ENV:PROTO} variable, to allow rewrites to redirect with the</span>
+<span class="s0">#     appropriate schema automatically (http or https).</span>
+<span class="s0">#</span>
+<span class="s0"># (2) The rule assumes by default that both HTTP and HTTPS environments are</span>
+<span class="s0">#     available for redirection.</span>
+<span class="s0">#     If your SSL certificate could not handle one of the domains used during</span>
+<span class="s0">#     redirection, you should turn the condition on.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://github.com/h5bp/server-configs-apache/issues/52</span>
+
+<span class="s0">&lt;IfModule mod_rewrite.c&gt;</span>
+
+    <span class="s0">RewriteEngine On</span>
+
+    <span class="s0"># (1)</span>
+    <span class="s0">RewriteCond %{HTTPS} =on</span>
+    <span class="s0">RewriteRule ^ - [E=PROTO:https]</span>
+    <span class="s0">RewriteCond %{HTTPS} !=on</span>
+    <span class="s0">RewriteRule ^ - [E=PROTO:http]</span>
+
+    <span class="s0"># (2)</span>
+    <span class="s0"># RewriteCond %{HTTPS} !=on</span>
+
+    <span class="s0">RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]</span>
+    <span class="s0">RewriteRule ^ %{ENV:PROTO}://%1%{REQUEST_URI} [R=301,L]</span>
+
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Forcing the `www.` at the beginning of URLs                        |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Rewrite example.com → www.example.com</span>
+
+<span class="s0"># The same content should never be available under two different URLs,</span>
+<span class="s0"># especially not with and without `www.` at the beginning.</span>
+<span class="s0"># This can cause SEO problems (duplicate content), and therefore, you should</span>
+<span class="s0"># choose one of the alternatives and redirect the other one.</span>
+<span class="s0">#</span>
+<span class="s0"># (!) NEVER USE BOTH WWW-RELATED RULES AT THE SAME TIME!</span>
+
+<span class="s0"># (1) Set %{ENV:PROTO} variable, to allow rewrites to redirect with the</span>
+<span class="s0">#     appropriate schema automatically (http or https).</span>
+<span class="s0">#</span>
+<span class="s0"># (2) The rule assumes by default that both HTTP and HTTPS environments are</span>
+<span class="s0">#     available for redirection.</span>
+<span class="s0">#     If your SSL certificate could not handle one of the domains used during</span>
+<span class="s0">#     redirection, you should turn the condition on.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://github.com/h5bp/server-configs-apache/issues/52</span>
+
+<span class="s0"># Be aware that the following might not be a good idea if you use &quot;real&quot;</span>
+<span class="s0"># subdomains for certain parts of your website.</span>
+
+<span class="s0"># &lt;IfModule mod_rewrite.c&gt;</span>
+
+<span class="s0">#     RewriteEngine On</span>
+
+<span class="s0">#     # (1)</span>
+<span class="s0">#     RewriteCond %{HTTPS} =on</span>
+<span class="s0">#     RewriteRule ^ - [E=PROTO:https]</span>
+<span class="s0">#     RewriteCond %{HTTPS} !=on</span>
+<span class="s0">#     RewriteRule ^ - [E=PROTO:http]</span>
+
+<span class="s0">#     # (2)</span>
+<span class="s0">#     # RewriteCond %{HTTPS} !=on</span>
+
+<span class="s0">#     RewriteCond %{HTTP_HOST} !^www\. [NC]</span>
+<span class="s0">#     RewriteCond %{SERVER_ADDR} !=127.0.0.1</span>
+<span class="s0">#     RewriteCond %{SERVER_ADDR} !=::1</span>
+<span class="s0">#     RewriteRule ^ %{ENV:PROTO}://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]</span>
+
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ######################################################################</span>
+<span class="s0"># # SECURITY                                                           #</span>
+<span class="s0"># ######################################################################</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Frame Options                                                      |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Protect website against clickjacking.</span>
+<span class="s0">#</span>
+<span class="s0"># The example below sends the `X-Frame-Options` response header with the value</span>
+<span class="s0"># `DENY`, informing browsers not to display the content of the web page in any</span>
+<span class="s0"># frame.</span>
+<span class="s0">#</span>
+<span class="s0"># This might not be the best setting for everyone. You should read about the</span>
+<span class="s0"># other two possible values the `X-Frame-Options` header field can have:</span>
+<span class="s0"># `SAMEORIGIN` and `ALLOW-FROM`.</span>
+<span class="s0"># https://tools.ietf.org/html/rfc7034#section-2.1.</span>
+<span class="s0">#</span>
+<span class="s0"># Keep in mind that while you could send the `X-Frame-Options` header for all</span>
+<span class="s0"># of your website's pages, this has the potential downside that it forbids even</span>
+<span class="s0"># non-malicious framing of your content (e.g.: when users visit your website</span>
+<span class="s0"># using a Google Image Search results page).</span>
+<span class="s0">#</span>
+<span class="s0"># Nonetheless, you should ensure that you send the `X-Frame-Options` header for</span>
+<span class="s0"># all pages that allow a user to make a state-changing operation (e.g: pages</span>
+<span class="s0"># that contain one-click purchase links, checkout or bank-transfer confirmation</span>
+<span class="s0"># pages, pages that make permanent configuration changes, etc.).</span>
+<span class="s0">#</span>
+<span class="s0"># Sending the `X-Frame-Options` header can also protect your website against</span>
+<span class="s0"># more than just clickjacking attacks.</span>
+<span class="s0"># https://cure53.de/xfo-clickjacking.pdf.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options</span>
+<span class="s0"># https://tools.ietf.org/html/rfc7034</span>
+<span class="s0"># https://blogs.msdn.microsoft.com/ieinternals/2010/03/30/combating-clickjacking-with-x-frame-options/</span>
+<span class="s0"># https://www.owasp.org/index.php/Clickjacking</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     Header always set X-Frame-Options &quot;DENY&quot; &quot;expr=%{CONTENT_TYPE} =~ m#text/html#i&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Content Security Policy (CSP)                                      |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Mitigate the risk of cross-site scripting and other content-injection</span>
+<span class="s0"># attacks.</span>
+<span class="s0">#</span>
+<span class="s0"># This can be done by setting a `Content Security Policy` which whitelists</span>
+<span class="s0"># trusted sources of content for your website.</span>
+<span class="s0">#</span>
+<span class="s0"># There is no policy that fits all websites, you will have to modify the</span>
+<span class="s0"># `Content-Security-Policy` directives in the example depending on your needs.</span>
+<span class="s0">#</span>
+<span class="s0"># The example policy below aims to:</span>
+<span class="s0">#</span>
+<span class="s0">#  (1) Restrict all fetches by default to the origin of the current website by</span>
+<span class="s0">#      setting the `default-src` directive to `'self'` - which acts as a</span>
+<span class="s0">#      fallback to all &quot;Fetch directives&quot; (https://developer.mozilla.org/en-US/docs/Glossary/Fetch_directive).</span>
+<span class="s0">#</span>
+<span class="s0">#      This is convenient as you do not have to specify all Fetch directives</span>
+<span class="s0">#      that apply to your site, for example:</span>
+<span class="s0">#      `connect-src 'self'; font-src 'self'; script-src 'self'; style-src 'self'`, etc.</span>
+<span class="s0">#</span>
+<span class="s0">#      This restriction also means that you must explicitly define from which</span>
+<span class="s0">#      site(s) your website is allowed to load resources from.</span>
+<span class="s0">#</span>
+<span class="s0">#  (2) The `&lt;base&gt;` element is not allowed on the website. This is to prevent</span>
+<span class="s0">#      attackers from changing the locations of resources loaded from relative</span>
+<span class="s0">#      URLs.</span>
+<span class="s0">#</span>
+<span class="s0">#      If you want to use the `&lt;base&gt;` element, then `base-uri 'self'` can be</span>
+<span class="s0">#      used instead.</span>
+<span class="s0">#</span>
+<span class="s0">#  (3) Form submissions are only allowed from the current website by setting:</span>
+<span class="s0">#      `form-action 'self'`.</span>
+<span class="s0">#</span>
+<span class="s0">#  (4) Prevents all websites (including your own) from embedding your webpages</span>
+<span class="s0">#      within e.g. the `&lt;iframe&gt;` or `&lt;object&gt;` element by setting:</span>
+<span class="s0">#      `frame-ancestors 'none'`.</span>
+<span class="s0">#</span>
+<span class="s0">#      The `frame-ancestors` directive helps avoid &quot;Clickjacking&quot; attacks and</span>
+<span class="s0">#      is similar to the `X-Frame-Options` header.</span>
+<span class="s0">#</span>
+<span class="s0">#      Browsers that support the CSP header will ignore `X-Frame-Options` if</span>
+<span class="s0">#      `frame-ancestors` is also specified.</span>
+<span class="s0">#</span>
+<span class="s0">#  (5) Forces the browser to treat all the resources that are served over HTTP</span>
+<span class="s0">#      as if they were loaded securely over HTTPS by setting the</span>
+<span class="s0">#      `upgrade-insecure-requests` directive.</span>
+<span class="s0">#</span>
+<span class="s0">#      Please note that `upgrade-insecure-requests` does not ensure HTTPS for</span>
+<span class="s0">#      the top-level navigation. If you want to force the website itself to be</span>
+<span class="s0">#      loaded over HTTPS you must include the `Strict-Transport-Security`</span>
+<span class="s0">#      header.</span>
+<span class="s0">#</span>
+<span class="s0">#  (6) The `Content-Security-Policy` header is included in all responses</span>
+<span class="s0">#      that are able to execute scripting. This includes the commonly used</span>
+<span class="s0">#      file types: HTML, XML and PDF documents. Although Javascript files</span>
+<span class="s0">#      can not execute script in a &quot;browsing context&quot;, they are still included</span>
+<span class="s0">#      to target workers:</span>
+<span class="s0">#      https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#CSP_in_workers</span>
+<span class="s0">#</span>
+<span class="s0"># To make your CSP implementation easier, you can use an online CSP header</span>
+<span class="s0"># generator such as:</span>
+<span class="s0"># https://report-uri.com/home/generate/</span>
+<span class="s0">#</span>
+<span class="s0"># It is encouraged that you validate your CSP header using a CSP validator</span>
+<span class="s0"># such as:</span>
+<span class="s0"># https://csp-evaluator.withgoogle.com</span>
+<span class="s0">#</span>
+<span class="s0"># https://csp.withgoogle.com/docs/</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy</span>
+<span class="s0"># https://www.html5rocks.com/en/tutorials/security/content-security-policy/</span>
+<span class="s0"># https://www.w3.org/TR/CSP/</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     #                                   (1)                 (2)              (3)                 (4)                     (5)                         (6)</span>
+<span class="s0">#     Header always set Content-Security-Policy &quot;default-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests&quot; &quot;expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | File access                                                        |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Block access to directories without a default document.</span>
+<span class="s0">#</span>
+<span class="s0"># You should leave the following uncommented, as you shouldn't allow anyone to</span>
+<span class="s0"># surf through every directory on your server (which may include rather</span>
+<span class="s0"># private places such as the CMS's directories).</span>
+
+<span class="s0">&lt;IfModule mod_autoindex.c&gt;</span>
+    <span class="s0">Options -Indexes</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="s0"># Block access to all hidden files and directories except for the</span>
+<span class="s0"># visible content from within the `/.well-known/` hidden directory.</span>
+<span class="s0">#</span>
+<span class="s0"># These types of files usually contain user preferences or the preserved state</span>
+<span class="s0"># of a utility, and can include rather private places like, for example, the</span>
+<span class="s0"># `.git` or `.svn` directories.</span>
+<span class="s0">#</span>
+<span class="s0"># The `/.well-known/` directory represents the standard (RFC 5785) path prefix</span>
+<span class="s0"># for &quot;well-known locations&quot; (e.g.: `/.well-known/manifest.json`,</span>
+<span class="s0"># `/.well-known/keybase.txt`), and therefore, access to its visible content</span>
+<span class="s0"># should not be blocked.</span>
+<span class="s0">#</span>
+<span class="s0"># https://www.mnot.net/blog/2010/04/07/well-known</span>
+<span class="s0"># https://tools.ietf.org/html/rfc5785</span>
+
+<span class="s0">&lt;IfModule mod_rewrite.c&gt;</span>
+    <span class="s0">RewriteEngine On</span>
+    <span class="s0">RewriteCond %{REQUEST_URI} &quot;!(^|/)\.well-known/([^./]+./?)+$&quot; [NC]</span>
+    <span class="s0">RewriteCond %{SCRIPT_FILENAME} -d [OR]</span>
+    <span class="s0">RewriteCond %{SCRIPT_FILENAME} -f</span>
+    <span class="s0">RewriteRule &quot;(^|/)\.&quot; - [F]</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="s0"># Block access to files that can expose sensitive information.</span>
+<span class="s0">#</span>
+<span class="s0"># By default, block access to backup and source files that may be left by some</span>
+<span class="s0"># text editors and can pose a security risk when anyone has access to them.</span>
+<span class="s0">#</span>
+<span class="s0"># https://feross.org/cmsploit/</span>
+<span class="s0">#</span>
+<span class="s0"># (!) Update the `&lt;FilesMatch&gt;` regular expression from below to include any</span>
+<span class="s0">#     files that might end up on your production server and can expose</span>
+<span class="s0">#     sensitive information about your website. These files may include:</span>
+<span class="s0">#     configuration files, files that contain metadata about the project (e.g.:</span>
+<span class="s0">#     project dependencies, build scripts, etc.).</span>
+
+<span class="s0">&lt;IfModule mod_authz_core.c&gt;</span>
+    <span class="s0">&lt;FilesMatch &quot;(^#.*#|\.(bak|conf|dist|fla|in[ci]|log|orig|psd|sh|sql|sw[op])|~)$&quot;&gt;</span>
+        <span class="s0">Require all denied</span>
+    <span class="s0">&lt;/FilesMatch&gt;</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | HTTP Strict Transport Security (HSTS)                              |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Force client-side TLS (Transport Layer Security) redirection.</span>
+<span class="s0">#</span>
+<span class="s0"># If a user types `example.com` in their browser, even if the server redirects</span>
+<span class="s0"># them to the secure version of the website, that still leaves a window of</span>
+<span class="s0"># opportunity (the initial HTTP connection) for an attacker to downgrade or</span>
+<span class="s0"># redirect the request.</span>
+<span class="s0">#</span>
+<span class="s0"># The following header ensures that a browser only connects to your server</span>
+<span class="s0"># via HTTPS, regardless of what the users type in the browser's address bar.</span>
+<span class="s0">#</span>
+<span class="s0"># (!) Be aware that Strict Transport Security is not revokable and you</span>
+<span class="s0">#     must ensure being able to serve the site over HTTPS for the duration</span>
+<span class="s0">#     you've specified in the `max-age` directive. When you don't have a</span>
+<span class="s0">#     valid TLS connection anymore (e.g. due to an expired TLS certificate)</span>
+<span class="s0">#     your visitors will see a nasty error message even when attempting to</span>
+<span class="s0">#     connect over HTTP.</span>
+<span class="s0">#</span>
+<span class="s0"># (1) Preloading Strict Transport Security.</span>
+<span class="s0">#     To submit your site for HSTS preloading, it is required that:</span>
+<span class="s0">#     * the `includeSubDomains` directive is specified</span>
+<span class="s0">#     * the `preload` directive is specified</span>
+<span class="s0">#     * the `max-age` is specified with a value of at least 31536000 seconds</span>
+<span class="s0">#       (1 year).</span>
+<span class="s0">#     https://hstspreload.org/#deployment-recommendations</span>
+<span class="s0">#</span>
+<span class="s0"># https://tools.ietf.org/html/rfc6797#section-6.1</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security</span>
+<span class="s0"># https://www.html5rocks.com/en/tutorials/security/transport-layer-security/</span>
+<span class="s0"># https://blogs.msdn.microsoft.com/ieinternals/2014/08/18/strict-transport-security/</span>
+<span class="s0"># https://hstspreload.org/</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     Header always set Strict-Transport-Security &quot;max-age=16070400; includeSubDomains&quot; &quot;expr=%{HTTPS} == 'on'&quot;</span>
+<span class="s0">#     # (1) Enable your site for HSTS preload inclusion.</span>
+<span class="s0">#     # Header always set Strict-Transport-Security &quot;max-age=31536000; includeSubDomains; preload&quot; &quot;expr=%{HTTPS} == 'on'&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Content Type Options                                               |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Prevent some browsers from MIME-sniffing the response.</span>
+<span class="s0">#</span>
+<span class="s0"># This reduces exposure to drive-by download attacks and cross-origin data</span>
+<span class="s0"># leaks, and should be left uncommented, especially if the server is serving</span>
+<span class="s0"># user-uploaded content or content that could potentially be treated as</span>
+<span class="s0"># executable by the browser.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options</span>
+<span class="s0"># https://blogs.msdn.microsoft.com/ie/2008/07/02/ie8-security-part-v-comprehensive-protection/</span>
+<span class="s0"># https://mimesniff.spec.whatwg.org/</span>
+
+<span class="s0">&lt;IfModule mod_headers.c&gt;</span>
+    <span class="s0">Header always set X-Content-Type-Options &quot;nosniff&quot;</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Cross-Site Scripting (XSS) Protection                              |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Protect website reflected Cross-Site Scripting (XSS) attacks.</span>
+<span class="s0">#</span>
+<span class="s0"># (1) Try to re-enable the cross-site scripting (XSS) filter built into most</span>
+<span class="s0">#     web browsers.</span>
+<span class="s0">#</span>
+<span class="s0">#     The filter is usually enabled by default, but in some cases, it may be</span>
+<span class="s0">#     disabled by the user. However, in Internet Explorer, for example, it can be</span>
+<span class="s0">#     re-enabled just by sending the  `X-XSS-Protection` header with the value</span>
+<span class="s0">#     of `1`.</span>
+<span class="s0">#</span>
+<span class="s0"># (2) Prevent web browsers from rendering the web page if a potential reflected</span>
+<span class="s0">#     (a.k.a non-persistent) XSS attack is detected by the filter.</span>
+<span class="s0">#</span>
+<span class="s0">#     By default, if the filter is enabled and browsers detect a reflected XSS</span>
+<span class="s0">#     attack, they will attempt to block the attack by making the smallest</span>
+<span class="s0">#     possible modifications to the returned web page.</span>
+<span class="s0">#</span>
+<span class="s0">#     Unfortunately, in some browsers (e.g.: Internet Explorer), this default</span>
+<span class="s0">#     behavior may allow the XSS filter to be exploited. Therefore, it's better</span>
+<span class="s0">#     to inform browsers to prevent the rendering of the page altogether,</span>
+<span class="s0">#     instead of attempting to modify it.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://hackademix.net/2009/11/21/ies-xss-filter-creates-xss-vulnerabilities</span>
+<span class="s0">#</span>
+<span class="s0"># (!) Do not rely on the XSS filter to prevent XSS attacks! Ensure that you are</span>
+<span class="s0">#     taking all possible measures to prevent XSS attacks, the most obvious</span>
+<span class="s0">#     being: validating and sanitizing your website's inputs.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection</span>
+<span class="s0"># https://blogs.msdn.microsoft.com/ie/2008/07/02/ie8-security-part-iv-the-xss-filter/</span>
+<span class="s0"># https://blogs.msdn.microsoft.com/ieinternals/2011/01/31/controlling-the-xss-filter/</span>
+<span class="s0"># https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     #                           (1)    (2)</span>
+<span class="s0">#     Header always set X-XSS-Protection &quot;1; mode=block&quot; &quot;expr=%{CONTENT_TYPE} =~ m#text/html#i&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Referrer Policy                                                    |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Set a strict Referrer Policy to mitigate information leakage.</span>
+<span class="s0">#</span>
+<span class="s0"># (1) The `Referrer-Policy` header is included in responses for resources</span>
+<span class="s0">#     that are able to request (or navigate to) other resources.</span>
+<span class="s0">#</span>
+<span class="s0">#     This includes the commonly used resource types:</span>
+<span class="s0">#     HTML, CSS, XML/SVG, PDF documents, scripts and workers.</span>
+<span class="s0">#</span>
+<span class="s0"># To prevent referrer leakage entirely, specify the `no-referrer` value</span>
+<span class="s0"># instead. Note that the effect could impact analytics metrics negatively.</span>
+<span class="s0">#</span>
+<span class="s0"># To check your Referrer Policy, you can use an online service, such as:</span>
+<span class="s0"># https://securityheaders.com/</span>
+<span class="s0"># https://observatory.mozilla.org/</span>
+<span class="s0">#</span>
+<span class="s0"># https://scotthelme.co.uk/a-new-security-header-referrer-policy/</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     #                                                             (1)</span>
+<span class="s0">#     Header always set Referrer-Policy &quot;strict-origin-when-cross-origin&quot; &quot;expr=%{CONTENT_TYPE} =~ m#text\/(css|html|javascript)|application\/pdf|xml#i&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Disable TRACE HTTP Method                                          |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Prevent Apache from responding to `TRACE` HTTP request.</span>
+<span class="s0">#</span>
+<span class="s0"># The TRACE method, while seemingly harmless, can be successfully leveraged</span>
+<span class="s0"># in some scenarios to steal legitimate users' credentials.</span>
+<span class="s0">#</span>
+<span class="s0"># Modern browsers now prevent TRACE requests being made via JavaScript,</span>
+<span class="s0"># however, other ways of sending TRACE requests with browsers have been</span>
+<span class="s0"># discovered, such as using Java.</span>
+<span class="s0">#</span>
+<span class="s0"># (!) If you have access to the main server configuration file, use the</span>
+<span class="s0">#     `TraceEnable` directive instead.</span>
+<span class="s0">#</span>
+<span class="s0"># https://tools.ietf.org/html/rfc7231#section-4.3.8</span>
+<span class="s0"># https://www.owasp.org/index.php/Cross_Site_Tracing</span>
+<span class="s0"># https://www.owasp.org/index.php/Test_HTTP_Methods_(OTG-CONFIG-006)</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/core.html#traceenable</span>
+
+<span class="s0"># &lt;IfModule mod_rewrite.c&gt;</span>
+<span class="s0">#     RewriteEngine On</span>
+<span class="s0">#     RewriteCond %{REQUEST_METHOD} ^TRACE [NC]</span>
+<span class="s0">#     RewriteRule .* - [R=405,L]</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Server-side technology information                                 |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Remove the `X-Powered-By` response header that:</span>
+<span class="s0">#</span>
+<span class="s0">#  * is set by some frameworks and server-side languages (e.g.: ASP.NET, PHP),</span>
+<span class="s0">#    and its value contains information about them (e.g.: their name, version</span>
+<span class="s0">#    number)</span>
+<span class="s0">#</span>
+<span class="s0">#  * doesn't provide any value to users, contributes to header bloat, and in</span>
+<span class="s0">#    some cases, the information it provides can expose vulnerabilities</span>
+<span class="s0">#</span>
+<span class="s0"># (!) If you can, you should disable the `X-Powered-By` header from the</span>
+<span class="s0">#     language/framework level (e.g.: for PHP, you can do that by setting</span>
+<span class="s0">#     `expose_php = off` in `php.ini`).</span>
+<span class="s0">#</span>
+<span class="s0"># https://php.net/manual/en/ini.core.php#ini.expose-php</span>
+
+<span class="s0">&lt;IfModule mod_headers.c&gt;</span>
+    <span class="s0">Header unset X-Powered-By</span>
+    <span class="s0">Header always unset X-Powered-By</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Server software information                                        |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Prevent Apache from adding a trailing footer line containing information</span>
+<span class="s0"># about the server to the server-generated documents (e.g.: error messages,</span>
+<span class="s0"># directory listings, etc.).</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/core.html#serversignature</span>
+
+<span class="s0">ServerSignature Off</span>
+
+<span class="s0"># ######################################################################</span>
+<span class="s0"># # WEB PERFORMANCE                                                    #</span>
+<span class="s0"># ######################################################################</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Compression                                                        |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0">&lt;IfModule mod_deflate.c&gt;</span>
+
+    <span class="s0"># Force compression for mangled `Accept-Encoding` request headers</span>
+    <span class="s0">#</span>
+    <span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding</span>
+    <span class="s0"># https://calendar.perfplanet.com/2010/pushing-beyond-gzipping/</span>
+
+    <span class="s0">&lt;IfModule mod_setenvif.c&gt;</span>
+        <span class="s0">&lt;IfModule mod_headers.c&gt;</span>
+            <span class="s0">SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding</span>
+            <span class="s0">RequestHeader append Accept-Encoding &quot;gzip,deflate&quot; env=HAVE_Accept-Encoding</span>
+        <span class="s0">&lt;/IfModule&gt;</span>
+    <span class="s0">&lt;/IfModule&gt;</span>
+
+    <span class="s0"># - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+    <span class="s0"># Compress all output labeled with one of the following media types.</span>
+    <span class="s0">#</span>
+    <span class="s0"># https://httpd.apache.org/docs/current/mod/mod_filter.html#addoutputfilterbytype</span>
+
+    <span class="s0">&lt;IfModule mod_filter.c&gt;</span>
+        <span class="s0">AddOutputFilterByType DEFLATE &quot;application/atom+xml&quot; \</span>
+                                      <span class="s0">&quot;application/javascript&quot; \</span>
+                                      <span class="s0">&quot;application/json&quot; \</span>
+                                      <span class="s0">&quot;application/ld+json&quot; \</span>
+                                      <span class="s0">&quot;application/manifest+json&quot; \</span>
+                                      <span class="s0">&quot;application/rdf+xml&quot; \</span>
+                                      <span class="s0">&quot;application/rss+xml&quot; \</span>
+                                      <span class="s0">&quot;application/schema+json&quot; \</span>
+                                      <span class="s0">&quot;application/geo+json&quot; \</span>
+                                      <span class="s0">&quot;application/vnd.ms-fontobject&quot; \</span>
+                                      <span class="s0">&quot;application/wasm&quot; \</span>
+                                      <span class="s0">&quot;application/x-font-ttf&quot; \</span>
+                                      <span class="s0">&quot;application/x-javascript&quot; \</span>
+                                      <span class="s0">&quot;application/x-web-app-manifest+json&quot; \</span>
+                                      <span class="s0">&quot;application/xhtml+xml&quot; \</span>
+                                      <span class="s0">&quot;application/xml&quot; \</span>
+                                      <span class="s0">&quot;font/eot&quot; \</span>
+                                      <span class="s0">&quot;font/opentype&quot; \</span>
+                                      <span class="s0">&quot;font/otf&quot; \</span>
+                                      <span class="s0">&quot;font/ttf&quot; \</span>
+                                      <span class="s0">&quot;image/bmp&quot; \</span>
+                                      <span class="s0">&quot;image/svg+xml&quot; \</span>
+                                      <span class="s0">&quot;image/vnd.microsoft.icon&quot; \</span>
+                                      <span class="s0">&quot;text/cache-manifest&quot; \</span>
+                                      <span class="s0">&quot;text/calendar&quot; \</span>
+                                      <span class="s0">&quot;text/css&quot; \</span>
+                                      <span class="s0">&quot;text/html&quot; \</span>
+                                      <span class="s0">&quot;text/javascript&quot; \</span>
+                                      <span class="s0">&quot;text/plain&quot; \</span>
+                                      <span class="s0">&quot;text/markdown&quot; \</span>
+                                      <span class="s0">&quot;text/vcard&quot; \</span>
+                                      <span class="s0">&quot;text/vnd.rim.location.xloc&quot; \</span>
+                                      <span class="s0">&quot;text/vtt&quot; \</span>
+                                      <span class="s0">&quot;text/x-component&quot; \</span>
+                                      <span class="s0">&quot;text/x-cross-domain-policy&quot; \</span>
+                                      <span class="s0">&quot;text/xml&quot;</span>
+
+    <span class="s0">&lt;/IfModule&gt;</span>
+
+    <span class="s0"># - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+    <span class="s0"># Map the following filename extensions to the specified encoding type in</span>
+    <span class="s0"># order to make Apache serve the file types with the appropriate</span>
+    <span class="s0"># `Content-Encoding` response header (do note that this will NOT make</span>
+    <span class="s0"># Apache compress them!).</span>
+    <span class="s0">#</span>
+    <span class="s0"># If these files types would be served without an appropriate</span>
+    <span class="s0"># `Content-Encoding` response header, client applications (e.g.: browsers)</span>
+    <span class="s0"># wouldn't know that they first need to uncompress the response, and thus,</span>
+    <span class="s0"># wouldn't be able to understand the content.</span>
+    <span class="s0">#</span>
+    <span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding</span>
+    <span class="s0"># https://httpd.apache.org/docs/current/mod/mod_mime.html#addencoding</span>
+
+    <span class="s0">&lt;IfModule mod_mime.c&gt;</span>
+        <span class="s0">AddEncoding gzip              svgz</span>
+    <span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Brotli pre-compressed content                                      |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Serve brotli compressed CSS, JS, HTML, SVG, ICS and JSON files if they exist</span>
+<span class="s0"># and if the client accepts br encoding.</span>
+<span class="s0">#</span>
+<span class="s0"># (!) To make this part relevant, you need to generate encoded files by your</span>
+<span class="s0">#     own. Enabling this part will not auto-generate brotlied files.</span>
+<span class="s0">#</span>
+<span class="s0"># Note that some clients (eg. browsers) require a secure connection to request</span>
+<span class="s0"># brotli-compressed resources.</span>
+<span class="s0"># https://www.chromestatus.com/feature/5420797577396224</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/mod_brotli.html#precompressed</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+
+<span class="s0">#     RewriteCond %{HTTP:Accept-Encoding} br</span>
+<span class="s0">#     RewriteCond %{REQUEST_FILENAME}\.br -f</span>
+<span class="s0">#     RewriteRule \.(css|ics|js|json|html|svg)$ %{REQUEST_URI}.br [L]</span>
+
+<span class="s0">#     # Prevent mod_deflate double gzip</span>
+<span class="s0">#     RewriteRule \.br$ - [E=no-gzip:1]</span>
+
+<span class="s0">#     &lt;FilesMatch &quot;\.br$&quot;&gt;</span>
+
+<span class="s0">#         &lt;IfModule mod_mime.c&gt;</span>
+<span class="s0">#             # Serve correct content types</span>
+<span class="s0">#             AddType text/css              css.br</span>
+<span class="s0">#             AddType text/calendar         ics.br</span>
+<span class="s0">#             AddType text/javascript       js.br</span>
+<span class="s0">#             AddType application/json      json.br</span>
+<span class="s0">#             AddType text/html             html.br</span>
+<span class="s0">#             AddType image/svg+xml         svg.br</span>
+
+<span class="s0">#             # Serve correct content charset</span>
+<span class="s0">#             AddCharset utf-8 .css.br \</span>
+<span class="s0">#                              .ics.br \</span>
+<span class="s0">#                              .js.br \</span>
+<span class="s0">#                              .json.br</span>
+<span class="s0">#         &lt;/IfModule&gt;</span>
+
+<span class="s0">#         # Force proxies to cache brotlied and non-brotlied files separately</span>
+<span class="s0">#         Header append Vary Accept-Encoding</span>
+
+<span class="s0">#     &lt;/FilesMatch&gt;</span>
+
+<span class="s0">#     # Serve correct encoding type</span>
+<span class="s0">#     AddEncoding br .br</span>
+
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | GZip pre-compressed content                                        |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Serve gzip compressed CSS, JS, HTML, SVG, ICS, and JSON files if they exist</span>
+<span class="s0"># and if the client accepts gzip encoding.</span>
+<span class="s0">#</span>
+<span class="s0"># (!) To make this part relevant, you need to generate encoded files by your</span>
+<span class="s0">#     own. Enabling this part will not auto-generate gziped files.</span>
+<span class="s0">#</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/mod_deflate.html#precompressed</span>
+<span class="s0">#</span>
+<span class="s0"># (1) Removing default MIME Type for .gz files allowing to add custom</span>
+<span class="s0">#     sub-types.</span>
+<span class="s0">#     You may prefer using less generic extensions such as .html_gz in order to</span>
+<span class="s0">#     keep the default behavior regarding .gz files.</span>
+<span class="s0">#     https://httpd.apache.org/docs/current/mod/mod_mime.html#removetype</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+
+<span class="s0">#     RewriteCond %{HTTP:Accept-Encoding} gzip</span>
+<span class="s0">#     RewriteCond %{REQUEST_FILENAME}\.gz -f</span>
+<span class="s0">#     RewriteRule \.(css|ics|js|json|html|svg)$ %{REQUEST_URI}.gz [L]</span>
+
+<span class="s0">#     # Prevent mod_deflate double gzip</span>
+<span class="s0">#     RewriteRule \.gz$ - [E=no-gzip:1]</span>
+
+<span class="s0">#     &lt;FilesMatch &quot;\.gz$&quot;&gt;</span>
+
+<span class="s0">#         # Serve correct content types</span>
+<span class="s0">#         &lt;IfModule mod_mime.c&gt;</span>
+<span class="s0">#             # (1)</span>
+<span class="s0">#             RemoveType gz</span>
+
+<span class="s0">#             # Serve correct content types</span>
+<span class="s0">#             AddType text/css              css.gz</span>
+<span class="s0">#             AddType text/calendar         ics.gz</span>
+<span class="s0">#             AddType text/javascript       js.gz</span>
+<span class="s0">#             AddType application/json      json.gz</span>
+<span class="s0">#             AddType text/html             html.gz</span>
+<span class="s0">#             AddType image/svg+xml         svg.gz</span>
+
+<span class="s0">#             # Serve correct content charset</span>
+<span class="s0">#             AddCharset utf-8 .css.gz \</span>
+<span class="s0">#                              .ics.gz \</span>
+<span class="s0">#                              .js.gz \</span>
+<span class="s0">#                              .json.gz</span>
+<span class="s0">#         &lt;/IfModule&gt;</span>
+
+<span class="s0">#         # Force proxies to cache gzipped and non-gzipped files separately</span>
+<span class="s0">#         Header append Vary Accept-Encoding</span>
+
+<span class="s0">#     &lt;/FilesMatch&gt;</span>
+
+<span class="s0">#     # Serve correct encoding type</span>
+<span class="s0">#     AddEncoding gzip .gz</span>
+
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Content transformation                                             |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Prevent intermediate caches or proxies (such as those used by mobile</span>
+<span class="s0"># network providers) and browsers data-saving features from modifying</span>
+<span class="s0"># the website's content using the `cache-control: no-transform` directive.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control</span>
+<span class="s0"># https://tools.ietf.org/html/rfc7234#section-5.2.2.4</span>
+<span class="s0">#</span>
+<span class="s0"># (!) Carefully consider the impact on your visitors before disabling</span>
+<span class="s0">#     content transformation. These transformations are performed to</span>
+<span class="s0">#     improve the experience for data- and cost-constrained users</span>
+<span class="s0">#     (e.g. users on a 2G connection).</span>
+<span class="s0">#</span>
+<span class="s0">#     You can test the effects of content transformation applied by</span>
+<span class="s0">#     Google's Lite Mode by visiting: https://googleweblight.com/i?u=https://www.example.com</span>
+<span class="s0">#</span>
+<span class="s0">#     https://support.google.com/webmasters/answer/6211428</span>
+<span class="s0">#</span>
+<span class="s0"># (!) If you are using `mod_pagespeed`, note that disabling this will</span>
+<span class="s0">#     prevent `PageSpeed` from rewriting HTML files, and, if the</span>
+<span class="s0">#     `ModPagespeedDisableRewriteOnNoTransform` directive isn't set to</span>
+<span class="s0">#     `off`, also from rewriting other resources.</span>
+<span class="s0">#</span>
+<span class="s0">#     https://developers.google.com/speed/pagespeed/module/configuration#notransform</span>
+
+<span class="s0"># &lt;IfModule mod_headers.c&gt;</span>
+<span class="s0">#     Header merge Cache-Control &quot;no-transform&quot;</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | ETags                                                              |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Remove `ETags` as resources are sent with far-future expires headers.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag</span>
+<span class="s0"># https://developer.yahoo.com/performance/rules.html#etags</span>
+<span class="s0"># https://tools.ietf.org/html/rfc7232#section-2.3</span>
+
+<span class="s0"># `FileETag None` doesn't work in all cases.</span>
+<span class="s0">&lt;IfModule mod_headers.c&gt;</span>
+    <span class="s0">Header unset ETag</span>
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0">FileETag None</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Cache expiration                                                   |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Serve resources with a far-future expiration date.</span>
+<span class="s0">#</span>
+<span class="s0"># (!) If you don't control versioning with filename-based cache busting, you</span>
+<span class="s0"># should consider lowering the cache times to something like one week.</span>
+<span class="s0">#</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control</span>
+<span class="s0"># https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expires</span>
+<span class="s0"># https://httpd.apache.org/docs/current/mod/mod_expires.html</span>
+
+<span class="s0">&lt;IfModule mod_expires.c&gt;</span>
+
+    <span class="s0">ExpiresActive on</span>
+    <span class="s0">ExpiresDefault                                      &quot;access plus 1 month&quot;</span>
+
+  <span class="s0"># CSS</span>
+
+    <span class="s0">ExpiresByType text/css                              &quot;access plus 1 year&quot;</span>
+
+
+  <span class="s0"># Data interchange</span>
+
+    <span class="s0">ExpiresByType application/atom+xml                  &quot;access plus 1 hour&quot;</span>
+    <span class="s0">ExpiresByType application/rdf+xml                   &quot;access plus 1 hour&quot;</span>
+    <span class="s0">ExpiresByType application/rss+xml                   &quot;access plus 1 hour&quot;</span>
+
+    <span class="s0">ExpiresByType application/json                      &quot;access plus 0 seconds&quot;</span>
+    <span class="s0">ExpiresByType application/ld+json                   &quot;access plus 0 seconds&quot;</span>
+    <span class="s0">ExpiresByType application/schema+json               &quot;access plus 0 seconds&quot;</span>
+    <span class="s0">ExpiresByType application/geo+json                  &quot;access plus 0 seconds&quot;</span>
+    <span class="s0">ExpiresByType application/xml                       &quot;access plus 0 seconds&quot;</span>
+    <span class="s0">ExpiresByType text/calendar                         &quot;access plus 0 seconds&quot;</span>
+    <span class="s0">ExpiresByType text/xml                              &quot;access plus 0 seconds&quot;</span>
+
+
+  <span class="s0"># Favicon (cannot be renamed!) and cursor images</span>
+
+    <span class="s0">ExpiresByType image/vnd.microsoft.icon              &quot;access plus 1 week&quot;</span>
+    <span class="s0">ExpiresByType image/x-icon                          &quot;access plus 1 week&quot;</span>
+
+  <span class="s0"># HTML</span>
+
+    <span class="s0">ExpiresByType text/html                             &quot;access plus 0 seconds&quot;</span>
+
+
+  <span class="s0"># JavaScript</span>
+
+    <span class="s0">ExpiresByType application/javascript                &quot;access plus 1 year&quot;</span>
+    <span class="s0">ExpiresByType application/x-javascript              &quot;access plus 1 year&quot;</span>
+    <span class="s0">ExpiresByType text/javascript                       &quot;access plus 1 year&quot;</span>
+
+
+  <span class="s0"># Manifest files</span>
+
+    <span class="s0">ExpiresByType application/manifest+json             &quot;access plus 1 week&quot;</span>
+    <span class="s0">ExpiresByType application/x-web-app-manifest+json   &quot;access plus 0 seconds&quot;</span>
+    <span class="s0">ExpiresByType text/cache-manifest                   &quot;access plus 0 seconds&quot;</span>
+
+
+  <span class="s0"># Markdown</span>
+
+    <span class="s0">ExpiresByType text/markdown                         &quot;access plus 0 seconds&quot;</span>
+
+
+  <span class="s0"># Media files</span>
+
+    <span class="s0">ExpiresByType audio/ogg                             &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType image/apng                            &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType image/bmp                             &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType image/gif                             &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType image/jpeg                            &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType image/png                             &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType image/svg+xml                         &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType image/webp                            &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType video/mp4                             &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType video/ogg                             &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType video/webm                            &quot;access plus 1 month&quot;</span>
+
+
+  <span class="s0"># WebAssembly</span>
+
+    <span class="s0">ExpiresByType application/wasm                      &quot;access plus 1 year&quot;</span>
+
+
+  <span class="s0"># Web fonts</span>
+
+    <span class="s0"># Collection</span>
+    <span class="s0">ExpiresByType font/collection                       &quot;access plus 1 month&quot;</span>
+
+    <span class="s0"># Embedded OpenType (EOT)</span>
+    <span class="s0">ExpiresByType application/vnd.ms-fontobject         &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType font/eot                              &quot;access plus 1 month&quot;</span>
+
+    <span class="s0"># OpenType</span>
+    <span class="s0">ExpiresByType font/opentype                         &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType font/otf                              &quot;access plus 1 month&quot;</span>
+
+    <span class="s0"># TrueType</span>
+    <span class="s0">ExpiresByType application/x-font-ttf                &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType font/ttf                              &quot;access plus 1 month&quot;</span>
+
+    <span class="s0"># Web Open Font Format (WOFF) 1.0</span>
+    <span class="s0">ExpiresByType application/font-woff                 &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType application/x-font-woff               &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType font/woff                             &quot;access plus 1 month&quot;</span>
+
+    <span class="s0"># Web Open Font Format (WOFF) 2.0</span>
+    <span class="s0">ExpiresByType application/font-woff2                &quot;access plus 1 month&quot;</span>
+    <span class="s0">ExpiresByType font/woff2                            &quot;access plus 1 month&quot;</span>
+
+
+  <span class="s0"># Other</span>
+
+    <span class="s0">ExpiresByType text/x-cross-domain-policy            &quot;access plus 1 week&quot;</span>
+
+<span class="s0">&lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | File concatenation                                                 |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># Allow concatenation from within specific files.</span>
+<span class="s0">#</span>
+<span class="s0"># If you have the following lines in a file called, for example,</span>
+<span class="s0"># `main.combined.js`:</span>
+<span class="s0">#</span>
+<span class="s0">#     &lt;!--#include file=&quot;js/jquery.js&quot; --&gt;</span>
+<span class="s0">#     &lt;!--#include file=&quot;js/jquery.timer.js&quot; --&gt;</span>
+<span class="s0">#</span>
+<span class="s0"># Apache will replace those lines with the content of the specified files.</span>
+
+<span class="s0"># &lt;IfModule mod_include.c&gt;</span>
+
+<span class="s0">#     &lt;FilesMatch &quot;\.combined\.js$&quot;&gt;</span>
+<span class="s0">#         Options +Includes</span>
+<span class="s0">#         AddOutputFilterByType INCLUDES application/javascript \</span>
+<span class="s0">#                                        application/x-javascript \</span>
+<span class="s0">#                                        text/javascript</span>
+<span class="s0">#         SetOutputFilter INCLUDES</span>
+<span class="s0">#     &lt;/FilesMatch&gt;</span>
+
+<span class="s0">#     &lt;FilesMatch &quot;\.combined\.css$&quot;&gt;</span>
+<span class="s0">#         Options +Includes</span>
+<span class="s0">#         AddOutputFilterByType INCLUDES text/css</span>
+<span class="s0">#         SetOutputFilter INCLUDES</span>
+<span class="s0">#     &lt;/FilesMatch&gt;</span>
+
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+<span class="s0"># ----------------------------------------------------------------------</span>
+<span class="s0"># | Filename-based cache busting                                       |</span>
+<span class="s0"># ----------------------------------------------------------------------</span>
+
+<span class="s0"># If you're not using a build process to manage your filename version revving,</span>
+<span class="s0"># you might want to consider enabling the following directives.</span>
+<span class="s0">#</span>
+<span class="s0"># To understand why this is important and even a better solution than using</span>
+<span class="s0"># something like `*.css?v231`, please see:</span>
+<span class="s0"># https://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/</span>
+
+<span class="s0"># &lt;IfModule mod_rewrite.c&gt;</span>
+<span class="s0">#     RewriteEngine On</span>
+<span class="s0">#     RewriteCond %{REQUEST_FILENAME} !-f</span>
+<span class="s0">#     RewriteRule ^(.+)\.(\w+)\.(bmp|css|cur|gif|ico|jpe?g|m?js|a?png|svgz?|webp|webmanifest)$ $1.$3 [L]</span>
+<span class="s0"># &lt;/IfModule&gt;</span>
+
+</pre>
+</body>
+</html>

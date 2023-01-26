@@ -1,0 +1,213 @@
+<html>
+<head>
+<title>.gitattributes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #cc7832;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+.gitattributes</font>
+</center></td></tr></table>
+<pre><span class="s0">## GITATTRIBUTES FOR WEB PROJECTS</span>
+<span class="s0">#</span>
+<span class="s0"># These settings are for any web project.</span>
+<span class="s0">#</span>
+<span class="s0"># Details per file setting:</span>
+<span class="s0">#   text    These files should be normalized (i.e. convert CRLF to LF).</span>
+<span class="s0">#   binary  These files are binary and should be left untouched.</span>
+<span class="s0">#</span>
+<span class="s0"># Note that binary is a macro for -text -diff.</span>
+<span class="s0">######################################################################</span>
+
+<span class="s0">## AUTO-DETECT</span>
+<span class="s0">##   Handle line endings automatically for files detected as</span>
+<span class="s0">##   text and leave all files detected as binary untouched.</span>
+<span class="s0">##   This will handle all files NOT defined below.</span>
+<span class="s1">* </span><span class="s2">text</span><span class="s1">=auto 
+</span>
+<span class="s0">## SOURCE CODE</span>
+<span class="s1">*.bat      text </span><span class="s2">eol</span><span class="s1">=crlf 
+*.coffee   text 
+*.css      text 
+*.htm      text 
+*.html     text 
+*.inc      text 
+*.ini      text 
+*.js       text 
+*.json     text 
+*.jsx      text 
+*.less     text 
+*.od       text 
+*.onlydata text 
+*.php      text 
+*.pl       text 
+*.py       text 
+*.rb       text 
+*.sass     text 
+*.scm      text 
+*.scss     text 
+*.sh       text </span><span class="s2">eol</span><span class="s1">=lf 
+*.sql      text 
+*.styl     text 
+*.tag      text 
+*.ts       text 
+*.tsx      text 
+*.xml      text 
+*.xhtml    text 
+</span>
+<span class="s0">## DOCKER</span>
+<span class="s1">*.dockerignore text 
+Dockerfile     text 
+</span>
+<span class="s0">## DOCUMENTATION</span>
+<span class="s1">*.markdown   text 
+*.md         text 
+*.mdwn       text 
+*.mdown      text 
+*.mkd        text 
+*.mkdn       text 
+*.mdtxt      text 
+*.mdtext     text 
+*.txt        text 
+AUTHORS      text 
+CHANGELOG    text 
+CHANGES      text 
+CONTRIBUTING text 
+COPYING      text 
+copyright    text 
+*COPYRIGHT*  text 
+INSTALL      text 
+license      text 
+LICENSE      text 
+NEWS         text 
+readme       text 
+*README*     text 
+TODO         text 
+</span>
+<span class="s0">## TEMPLATES</span>
+<span class="s1">*.dot        text 
+*.ejs        text 
+*.haml       text 
+*.handlebars text 
+*.hbs        text 
+*.hbt        text 
+*.jade       text 
+*.latte      text 
+*.mustache   text 
+*.njk        text 
+*.phtml      text 
+*.tmpl       text 
+*.tpl        text 
+*.twig       text 
+</span>
+<span class="s0">## LINTERS</span>
+<span class="s1">.babelrc      text 
+.csslintrc    text 
+.eslintrc     text 
+.htmlhintrc   text 
+.jscsrc       text 
+.jshintrc     text 
+.jshintignore text 
+.prettierrc   text 
+.stylelintrc  text 
+</span>
+<span class="s0">## CONFIGS</span>
+<span class="s1">*.bowerrc       text 
+*.cnf           text 
+*.conf          text 
+*.config        text 
+.browserslistrc text 
+.editorconfig   text 
+.gitattributes  text 
+.gitconfig      text 
+.gitignore      text 
+.htaccess       text 
+*.npmignore     text 
+*.yaml          text 
+*.yml           text 
+browserslist    text 
+Makefile        text 
+makefile        text 
+</span>
+<span class="s0">## HEROKU</span>
+<span class="s1">Procfile    text 
+.slugignore text 
+</span>
+<span class="s0">## GRAPHICS</span>
+<span class="s1">*.ai   binary 
+*.bmp  binary 
+*.eps  binary 
+*.gif  binary 
+*.ico  binary 
+*.jng  binary 
+*.jp2  binary 
+*.jpg  binary 
+*.jpeg binary 
+*.jpx  binary 
+*.jxr  binary 
+*.pdf  binary 
+*.png  binary 
+*.psb  binary 
+*.psd  binary 
+*.svg  text 
+*.svgz binary 
+*.tif  binary 
+*.tiff binary 
+*.wbmp binary 
+*.webp binary 
+</span>
+<span class="s0">## AUDIO</span>
+<span class="s1">*.kar  binary 
+*.m4a  binary 
+*.mid  binary 
+*.midi binary 
+*.mp3  binary 
+*.ogg  binary 
+*.ra   binary 
+</span>
+<span class="s0">## VIDEO</span>
+<span class="s1">*.3gpp binary 
+*.3gp  binary 
+*.as   binary 
+*.asf  binary 
+*.asx  binary 
+*.fla  binary 
+*.flv  binary 
+*.m4v  binary 
+*.mng  binary 
+*.mov  binary 
+*.mp4  binary 
+*.mpeg binary 
+*.mpg  binary 
+*.ogv  binary 
+*.swc  binary 
+*.swf  binary 
+*.webm binary 
+</span>
+<span class="s0">## ARCHIVES</span>
+<span class="s1">*.7z  binary 
+*.gz  binary 
+*.jar binary 
+*.rar binary 
+*.tar binary 
+*.zip binary 
+</span>
+<span class="s0">## FONTS</span>
+<span class="s1">*.ttf   binary 
+*.eot   binary 
+*.otf   binary 
+*.woff  binary 
+*.woff2 binary 
+</span>
+<span class="s0">## EXECUTABLES</span>
+<span class="s1">*.exe binary 
+*.pyc binary 
+</span></pre>
+</body>
+</html>
